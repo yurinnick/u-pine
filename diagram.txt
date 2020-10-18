@@ -1,0 +1,16 @@
+@startuml
+participant "eMMC / SD card"
+participant "Network / Storage / HTTP"
+
+box Device #LightBlue
+BootROM -> "u-boot SPL": load
+"u-boot SPL" -> "u-boot": load
+"u-boot" <-- "eMMC / SD card": boot config (scr/extlinux)
+"u-boot" <-- "eMMC / SD card": u-root Linux kernel
+"u-boot" <-- "eMMC / SD card": u-root initramfs
+"u-boot" -> "u-root": load
+"u-root" <-- "Network / Storage / HTTP": Linux kernel
+"u-root" <-- "Network / Storage / HTTP": initramfs
+"u-root" -> "Target OS": kexec
+end box
+@enduml
