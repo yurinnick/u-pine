@@ -32,7 +32,7 @@ initramfs-uroot.cpio: modules
 	go get github.com/u-root/u-root
 	$(GOFLAGS) u-root \
 	-files $(BUILD_DIR)/modules/lib/modules/5.8.13-uroot:/usr/lib/modules/5.8.13-uroot \
-	core github.com/u-root/u-root/cmds/exp/modprobe
+	core boot github.com/u-root/u-root/cmds/exp/modprobe
 	cp /tmp/initramfs.linux_arm64.cpio initramfs-uroot.cpio
 
 u-boot-sunxi-with-spl-pinephone.bin:
