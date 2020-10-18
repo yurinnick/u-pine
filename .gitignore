@@ -1,0 +1,9 @@
+/tmp
+/output
+/build
+Image
+*.img
+*.bin
+*.cpio
+*.dtb
+*.config
