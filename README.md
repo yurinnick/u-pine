@@ -9,12 +9,10 @@ u-root for Pinephone
 
 
 ## Dependencies
-- Go 1.13
+- Go 1.17
 - aarch64-linux-gnu toolchain
 - mtools
 
 ## How-to
 - `make pinephone-uroot.img`
 - `sudo dd if=pinephone-uroot.img of=/dev/sdX bs=1M status=progress conv=fsync`
-
-

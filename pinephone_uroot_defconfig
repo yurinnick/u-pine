@@ -1,5 +1,6 @@
 # disable auto local version
 CONFIG_LOCALVERSION_AUTO=n
+CONFIG_LOCALVERSION="-uroot"
 
 # uroot essentials
 CONFIG_MMU=y

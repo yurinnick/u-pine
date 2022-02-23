@@ -1,71 +1,83 @@
-GOFLAGS=GOARCH=arm64
 PROJECT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 BUILD_DIR=$(PROJECT_DIR)/build
+OUTPUT_DIR=$(PROJECT_DIR)/output
+TMP_DIR=$(PROJECT_DIR)/tmp
+
 KBUILD_OUTPUT=$(BUILD_DIR)/linux-arm64
-CROSS_FLAGS = ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- 
-KERNEL_FLAGS= LOCALVERSION=-uroot INSTALL_MOD_PATH=$(BUILD_DIR)/modules KBUILD_OUTPUT=$(KBUILD_OUTPUT)
+
+LINUX_CHECKOUT_DIR=$(TMP_DIR)/linux
+ATF_CHECKOUT_DIR=$(TMP_DIR)/build_atm
+
+CCACHE_EXISTS := $(shell ccache -V)
+ifdef CCACHE_EXISTS
+    CC := ccache $(CC)
+    CXX := ccache $(CXX)
+endif
+
+GCC_CROSS_FLAGS = ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+GCC_KERNEL_BUILD_FLAGS= INSTALL_MOD_PATH=$(OUTPUT_DIR) KBUILD_OUTPUT=$(KBUILD_OUTPUT)
+GCC_THREATS_NUM=$(shell grep -c ^processor /proc/cpuinfo)
+
+GO_FLAGS=GOARCH=arm64 GO111MODULE=off
 
 build_atm:
-	git clone --depth 1 https://github.com/ARM-software/arm-trusted-firmware tmp/build_atm
-	make -C tmp/arm-trusted-firmware PLAT=sun50i_a64 DEBUG=1 bl31
-	cp tmp/arm-trusted-firmware/build/sun50i_a64/debug/bl31.bin $(OUTPUT_DIR)
+	[ -d "$(ATF_CHECKOUT_DIR)" ] || git clone --depth 1 https://github.com/ARM-software/arm-trusted-firmware $(ATF_CHECKOUT_DIR)
+	make -C $(ATF_CHECKOUT_DIR) PLAT=sun50i_a64 DEBUG=1 bl31
+	cp $(ATF_CHECKOUT_DIR)/build/sun50i_a64/debug/bl31.bin $(OUTPUT_DIR)
 
 Image board-1.2.dtb modules:
-	rm -rf $(PROJECT_DIR)/tmp
-	mkdir $(PROJECT_DIR)/tmp
-	git clone --depth 1 https://github.com/megous/linux $(PROJECT_DIR)/tmp/linux
-	cp pinephone_uroot_defconfig $(PROJECT_DIR)/tmp/linux/arch/arm64/configs/pinephone_uroot_defconfig
+	mkdir -p $(TMP_DIR)
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(KBUILD_OUTPUT)
 
-	rm -rf "$(KBUILD_OUTPUT)"
-	mkdir -p "$(KBUILD_OUTPUT)" "$(BUILD_DIR)/modules"
+	[ -d "$(LINUX_CHECKOUT_DIR)" ] || git clone --depth 1 https://github.com/megous/linux $(LINUX_CHECKOUT_DIR)
+	cp pinephone_uroot_defconfig $(LINUX_CHECKOUT_DIR)/arch/arm64/configs/pinephone_uroot_defconfig
 
-	make -C $(PROJECT_DIR)/tmp/linux $(CROSS_FLAGS) pinephone_uroot_defconfig
-	make -C $(PROJECT_DIR)/tmp/linux $(CROSS_FLAGS) -j8 clean
-	make -C $(PROJECT_DIR)/tmp/linux $(CROSS_FLAGS) $(KERNEL_FLAGS) -j8 Image dtbs modules 
-	make -C $(PROJECT_DIR)/tmp/linux $(CROSS_FLAGS) $(KERNEL_FLAGS) -j8 modules_install
+	make -C $(LINUX_CHECKOUT_DIR) $(GCC_CROSS_FLAGS) -j$(GCC_THREATS_NUM) pinephone_uroot_defconfig O=$(KBUILD_OUTPUT)
+	make -C $(LINUX_CHECKOUT_DIR) $(GCC_CROSS_FLAGS) -j$(GCC_THREATS_NUM) clean
+	make -C $(LINUX_CHECKOUT_DIR) $(GCC_CROSS_FLAGS) $(GCC_KERNEL_BUILD_FLAGS) -j$(GCC_THREATS_NUM) Image dtbs modules
+	make -C $(LINUX_CHECKOUT_DIR) $(GCC_CROSS_FLAGS) $(GCC_KERNEL_BUILD_FLAGS) -j$(GCC_THREATS_NUM) modules_install
 
-	cp -f $(KBUILD_OUTPUT)/arch/arm64/boot/Image Image
-	cp -f $(KBUILD_OUTPUT)/.config linux.config
-	cp -f $(KBUILD_OUTPUT)/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dtb board-1.2.dtb
+	cp -f $(KBUILD_OUTPUT)/arch/arm64/boot/Image $(OUTPUT_DIR)/Image
+	cp -f $(KBUILD_OUTPUT)/.config $(OUTPUT_DIR)/linux.config
+	cp -f $(KBUILD_OUTPUT)/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dtb $(OUTPUT_DIR)/board-1.2.dtb
 
 initramfs-uroot.cpio: modules
-	go get github.com/u-root/u-root
-	$(GOFLAGS) u-root \
-	-files $(BUILD_DIR)/modules/lib/modules/5.8.13-uroot:/usr/lib/modules/5.8.13-uroot \
-	core boot github.com/u-root/u-root/cmds/exp/modprobe
-	cp /tmp/initramfs.linux_arm64.cpio initramfs-uroot.cpio
+	$(GO_FLAGS) go get github.com/u-root/u-root
+	$(GO_FLAGS) u-root \
+		-files $(OUTPUT_DIR)/lib/modules:/lib/modules \
+		core \
+		boot \
+		github.com/u-root/u-root/cmds/exp/modprobe
+
+	cp /tmp/initramfs.linux_arm64.cpio $(OUTPUT_DIR)/initramfs-uroot.cpio
 
 u-boot-sunxi-with-spl-pinephone.bin:
-	# wget "https://gitlab.com/pine64-org/crust-meta/-/jobs/artifacts/master/raw/$@?job=build"
-	wget "https://gitlab.com/pine64-org/u-boot/-/jobs/artifacts/master/raw/$@?job=build" -O $@
+	wget "https://gitlab.com/pine64-org/u-boot/-/jobs/artifacts/master/raw/$@?job=build" -O $(OUTPUT_DIR)/$@
 
 pinephone-uroot-base.img: Image board-1.2.dtb initramfs-uroot.cpio u-boot-sunxi-with-spl-pinephone.bin extlinux.conf
-	@echo "MKFS  $@"
-	@rm -f $@
-	@truncate --size 80M $@
-	@mkfs.fat -F32 $@
-	
-	@mcopy -i $@ Image ::Image
-	@mcopy -i $@ board-1.2.dtb ::board-1.2.dtb
-	@mcopy -i $@ initramfs-uroot.cpio ::initramfs-uroot.cpio
-	@mcopy -i $@ u-boot-sunxi-with-spl-pinephone.bin ::u-boot-sunxi-with-spl-pinephone.bin
-	@mmd -i $@ ::extlinux
-	@mcopy -i $@ extlinux.conf ::extlinux/extlinux.conf
+	@echo "MKFS  $(OUTPUT_DIR)/$@"
+	@rm -f $(OUTPUT_DIR)/$@
+	@truncate --size 80M $(OUTPUT_DIR)/$@
+	@mkfs.fat -F32 $(OUTPUT_DIR)/$@
+
+	@mcopy -i $(OUTPUT_DIR)/$@ $(OUTPUT_DIR)/Image ::Image
+	@mcopy -i $(OUTPUT_DIR)/$@ $(OUTPUT_DIR)/board-1.2.dtb ::board-1.2.dtb
+	@mcopy -i $(OUTPUT_DIR)/$@ $(OUTPUT_DIR)/initramfs-uroot.cpio ::initramfs-uroot.cpio
+	@mcopy -i $(OUTPUT_DIR)/$@ $(OUTPUT_DIR)/u-boot-sunxi-with-spl-pinephone.bin ::u-boot-sunxi-with-spl-pinephone.bin
+	@mmd -i $(OUTPUT_DIR)/$@ ::extlinux
+	@mcopy -i $(OUTPUT_DIR)/$@ extlinux.conf ::extlinux/extlinux.conf
 
 pinephone-uroot.img: pinephone-uroot-base.img
-	rm -f $@
-	truncate --size 80M $@
-	parted -s $@ mktable msdos
-	parted -s $@ mkpart primary fat32 2048s 100%
-	parted -s $@ set 1 boot on
-	dd if=u-boot-sunxi-with-spl-pinephone.bin of=$@ bs=8k seek=1
-	dd if=pinephone-uroot-base.img of=$@ seek=1024 bs=1k
+	rm -f $(OUTPUT_DIR)/$@
+	truncate --size 80M $(OUTPUT_DIR)/$@
+	parted -s $(OUTPUT_DIR)/$@ mktable msdos
+	parted -s $(OUTPUT_DIR)/$@ mkpart primary fat32 2048s 100%
+	parted -s $(OUTPUT_DIR)/$@ set 1 boot on
+	dd if=$(OUTPUT_DIR)/u-boot-sunxi-with-spl-pinephone.bin of=$(OUTPUT_DIR)/$@ bs=8k seek=1
+	dd if=$(OUTPUT_DIR)/pinephone-uroot-base.img of=$(OUTPUT_DIR)/$@ seek=1024 bs=1k
 
 clean:
-	rm -rf tmp/
-	rm -rf build/
-	rm -rf Image
-	rm -rf *.img
-	rm -rf *.bin
-	rm -rf *.cpio
-	rm -rf *.dtb
+	rm -rf $(TMP_DIR)
+	rm -rf $(BUILD_DIR)
+	rm -rf $(OUTPUT_DIR)
