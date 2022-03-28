@@ -20,7 +20,7 @@ GCC_THREATS_NUM=$(shell grep -c ^processor /proc/cpuinfo)
 
 MAKE_CMD=make -C $(LINUX_CHECKOUT_DIR) $(GCC_CROSS_FLAGS) -j$(GCC_THREATS_NUM)
 
-GO_FLAGS=GOARCH=arm64 GO111MODULE=off
+GO_FLAGS=GOARCH=arm64
 
 build_atm:
 	[ -d "$(ATF_CHECKOUT_DIR)" ] || git clone --depth 1 https://github.com/ARM-software/arm-trusted-firmware $(ATF_CHECKOUT_DIR)
@@ -44,13 +44,31 @@ Image board-1.2.dtb modules:
 	cp -f $(KBUILD_OUTPUT)/.config $(OUTPUT_DIR)/linux.config
 	cp -f $(KBUILD_OUTPUT)/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone-1.2.dtb $(OUTPUT_DIR)/board-1.2.dtb
 
-initramfs-uroot.cpio: modules
-	GO111MODULE=off go get github.com/u-root/u-root
-	$(GO_FLAGS) u-root \
-		-files $(OUTPUT_DIR)/lib/modules:/lib/modules \
+jumpdrive:
+	cd jumpdrive && \
+	$(GO_FLAGS) go get && \
+	$(GO_FLAGS) go build -o $(OUTPUT_DIR)/jumpdrive
+
+ssh_files:
+	mkdir -p $(OUTPUT_DIR)/ssh
+	[ -f "$(OUTPUT_DIR)/ssh/id_rsa" ] || ssh-keygen -t rsa -b 2048 -N "" -f $(OUTPUT_DIR)/ssh/id_rsa
+	cat  $$HOME/.ssh/id_rsa.pub > $(OUTPUT_DIR)/ssh/authorized_keys
+
+initramfs-uroot.cpio: modules jumpdrive ssh_files
+	$(GO_FLAGS) GO111MODULE=off go get github.com/u-root/u-root
+	$(GO_FLAGS) go get github.com/u-root/cpu
+	$(GO_FLAGS) GO111MODULE=off u-root \
+		-uinitcmd="/jumpdrive" \
+		-files $(OUTPUT_DIR)/lib/modules:lib/modules \
+		-files $(OUTPUT_DIR)/jumpdrive:jumpdrive \
+		-files $(OUTPUT_DIR)/ssh:usr/ssh \
+		-files $(PROJECT_DIR)/files/splash.png:usr/splash.png \
 		core \
 		boot \
-		github.com/u-root/u-root/cmds/exp/modprobe
+		github.com/u-root/u-root/cmds/exp/modprobe \
+		github.com/u-root/u-root/cmds/exp/newsshd \
+		github.com/u-root/u-root/cmds/exp/fbsplash \
+		github.com/u-root/cpu/cmds/cpud \
 
 	cp /tmp/initramfs.linux_arm64.cpio $(OUTPUT_DIR)/initramfs-uroot.cpio
 

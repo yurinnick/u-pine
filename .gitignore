@@ -1,9 +1,11 @@
 /tmp
 /output
 /build
+/.vscode
 Image
 *.img
 *.bin
 *.cpio
 *.dtb
 *.config
+**/vendor/
