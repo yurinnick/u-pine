@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"image/png"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -94,7 +95,17 @@ func initGadget() error {
 func setupPowersaving(cpuCount int) (errors []error) {
 	for i := 0; i <= cpuCount-1; i++ {
 		scalingGovFilepath := fmt.Sprintf("/sys/devices/system/cpu/cpu%d/cpufreq/scaling_governor", i)
-		if err := os.WriteFile(scalingGovFilepath, []byte("powersaving"), 0644); err != nil {
+		scalingGovWriter, err := os.OpenFile(scalingGovFilepath, os.O_WRONLY, 0o644)
+		if err != nil {
+			errors = append(errors, fmt.Errorf("failed open %s file: %s", scalingGovFilepath, err))
+			continue
+		}
+		powersavingStrReader := strings.NewReader("powersave")
+		// os.WriteFile fails with "invalid argument" error
+		// On write(2), sysfs expects the entire buffer to be passed during the first write.
+		// Sysfs then passes the entire buffer to the store() method.
+		// https://www.kernel.org/doc/html/latest/filesystems/sysfs.html#reading-writing-attribute-data
+		if _, err := io.Copy(scalingGovWriter, powersavingStrReader); err != nil {
 			errors = append(errors, fmt.Errorf("failed to set powersaving scaling for cpu%d: %s", i, err))
 		}
 	}
