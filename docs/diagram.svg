@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="237px" preserveAspectRatio="none" style="width:410px;height:237px;background:#0B58A8;" version="1.1" viewBox="0 0 410 237" width="410px" zoomAndPan="magnify"><defs/><g><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="82" x2="82" y1="36.2969" y2="201.9609"/><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="198" x2="198" y1="36.2969" y2="201.9609"/><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="283" x2="283" y1="36.2969" y2="201.9609"/><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="374" x2="374" y1="36.2969" y2="201.9609"/><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="125" x="20" y="5"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="111" x="27" y="24.9951">eMMC / SD card</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="125" x="20" y="200.9609"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="111" x="27" y="220.9561">eMMC / SD card</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="47" x="175" y="5"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="33" x="182" y="24.9951">ROM</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="47" x="175" y="200.9609"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="33" x="182" y="220.9561">ROM</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="63" x="252" y="5"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="49" x="259" y="24.9951">u-boot</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="63" x="252" y="200.9609"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="49" x="259" y="220.9561">u-boot</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="59" x="345" y="5"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="45" x="352" y="24.9951">u-root</text><rect fill="#0B58A8" height="30.2969" rx="2.5" ry="2.5" style="stroke:#FFFFFF;stroke-width:1.0;" width="59" x="345" y="200.9609"/><text fill="#FFFFFF" font-family="Verdana" font-size="14" lengthAdjust="spacing" textLength="45" x="352" y="220.9561">u-root</text><polygon fill="#FFFFFF" points="271.5,63.4297,281.5,67.4297,271.5,71.4297,275.5,67.4297" style="stroke:#FFFFFF;stroke-width:1.0;"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="198.5" x2="277.5" y1="67.4297" y2="67.4297"/><text fill="#FFFFFF" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="27" x="205.5" y="62.3638">load</text><polygon fill="#FFFFFF" points="271.5,92.5625,281.5,96.5625,271.5,100.5625,275.5,96.5625" style="stroke:#FFFFFF;stroke-width:1.0;"/><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="82.5" x2="277.5" y1="96.5625" y2="96.5625"/><text fill="#FFFFFF" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="72" x="89.5" y="91.4966">boot config</text><polygon fill="#FFFFFF" points="271.5,121.6953,281.5,125.6953,271.5,129.6953,275.5,125.6953" style="stroke:#FFFFFF;stroke-width:1.0;"/><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="82.5" x2="277.5" y1="125.6953" y2="125.6953"/><text fill="#FFFFFF" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="120" x="89.5" y="120.6294">u-root Linux kernel</text><polygon fill="#FFFFFF" points="271.5,150.8281,281.5,154.8281,271.5,158.8281,275.5,154.8281" style="stroke:#FFFFFF;stroke-width:1.0;"/><line style="stroke:#FFFFFF;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="82.5" x2="277.5" y1="154.8281" y2="154.8281"/><text fill="#FFFFFF" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="100" x="89.5" y="149.7622">u-root initramfs</text><polygon fill="#FFFFFF" points="362.5,179.9609,372.5,183.9609,362.5,187.9609,366.5,183.9609" style="stroke:#FFFFFF;stroke-width:1.0;"/><line style="stroke:#FFFFFF;stroke-width:1.0;" x1="283.5" x2="368.5" y1="183.9609" y2="183.9609"/><text fill="#FFFFFF" font-family="Verdana" font-size="13" lengthAdjust="spacing" textLength="27" x="290.5" y="178.895">load</text><!--MD5=[2cdba8e016d5d59c927c2aac8931d3a2]
+@startuml
+!theme amiga
+participant "eMMC / SD card"
+
+ROM -> "u-boot": load
+"u-boot" <- - "eMMC / SD card": boot config
+"u-boot" <- - "eMMC / SD card": u-root Linux kernel
+"u-boot" <- - "eMMC / SD card": u-root initramfs
+"u-boot" -> "u-root": load
+@enduml
+
+@startuml
+
+
+
+
+
+
+<style>
+  root {
+    BackgroundColor #0B58A8
+    FontColor #FFFFFF
+    FontName Verdana
+    HyperLinkColor #FDA325
+    LineColor #FFFFFF
+    LineThickness 1
+    Margin 5
+  }
+  caption {
+    LineThickness 0
+  }
+  footer {
+    LineThickness 0
+  }
+  groupHeader {
+    BackgroundColor #FFFFFF
+    FontColor #0B58A8
+    FontStyle bold
+  }
+  header {
+    LineThickness 0
+  }
+  node {
+    MaximumWidth 300
+  }
+  referenceHeader {
+    BackgroundColor #FFFFFF
+    FontColor #0B58A8
+    FontStyle bold
+  }
+  separator {
+    BackgroundColor #FFFFFF
+    FontColor #0B58A8
+    FontStyle bold
+  }
+  title {
+    FontSize 22
+    LineThickness 0
+  }
+</style>
+
+skinparam ArrowLollipopColor #FFFFFF
+skinparam BackgroundColor #0B58A8
+skinparam DefaultFontName Verdana
+skinparam DefaultMonospacedFontName Courier
+skinparam LifelineStrategy nosolid
+skinparam ParticipantPadding 10
+skinparam SequenceLifeLineBorderColor #FFFFFF
+skinparam Shadowing false
+skinparam UseBetaStyle true
+
+skinparam Activity {
+  BackgroundColor #0B58A8
+  BarColor #FFFFFF
+  BorderColor #FFFFFF
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam Boundary {
+  FontColor #FFFFFF
+}
+skinparam Box {
+  Padding 5
+}
+skinparam CircledCharacter {
+  FontColor #0B58A8
+  FontName Courier
+  Radius 9
+}
+skinparam Class {
+  BackgroundColor #0B58A8
+  BorderColor #FFFFFF
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam ClassAttribute {
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam ClassStereotype {
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam Footer {
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam Header {
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam Hyperlink {
+  Color #FDA325
+}
+skinparam IconPackage {
+  Color #FFFFFF
+  BackgroundColor #0B58A8
+}
+skinparam IconPrivate {
+  Color #FFFFFF
+  BackgroundColor #0B58A8
+}
+skinparam IconProtected {
+  Color #FFFFFF
+  BackgroundColor #0B58A8
+}
+skinparam IconPublic {
+  Color #FFFFFF
+  BackgroundColor #0B58A8
+}
+skinparam Note {
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam Object {
+  BorderColor #FFFFFF
+}
+skinparam Package {
+  BorderColor #FFFFFF
+  FontColor #FFFFFF
+  FontName Verdana
+}
+skinparam State {
+  BackgroundColor #0B58A8
+  BorderColor #FFFFFF
+}
+skinparam StereotypeA {
+  BackgroundColor #FFFFFF
+  BorderColor #FFFFFF
+}
+skinparam StereotypeC {
+  BackgroundColor #FFFFFF
+  BorderColor #FFFFFF
+}
+skinparam StereotypeE {
+  BackgroundColor #FFFFFF
+  BorderColor #FFFFFF
+}
+skinparam StereotypeI {
+  BackgroundColor #FFFFFF
+  BorderColor #FFFFFF
+}
+skinparam StereotypeN {
+  BackgroundColor #FFFFFF
+  BorderColor #FFFFFF
+}
+skinparam UseCaseStereoType {
+  FontColor #FFFFFF
+  FontName Verdana
+}
+participant "eMMC / SD card"
+
+ROM -> "u-boot": load
+"u-boot" <- - "eMMC / SD card": boot config
+"u-boot" <- - "eMMC / SD card": u-root Linux kernel
+"u-boot" <- - "eMMC / SD card": u-root initramfs
+"u-boot" -> "u-root": load
+@enduml
+
+PlantUML version 1.2022.3beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
