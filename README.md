@@ -7,10 +7,32 @@ Just like [Jumpdrive](https://github.com/dreemurrs-embedded/Jumpdrive) but on Go
 
 ## Features
 
-- eMMC/SDCard access
-- Network-over-usb
-- (WIP) SSH access
+- [x] eMMC/SDCard access
+- [x] Network-over-usb
+- [x] SSH access
+- [ ] Bootloader
+- [ ] Netboot
 
+# User Guide
+
+1. To get a predictable name for Pinephones usb network inteface copy and init udev rules:
+```
+$ cp configs/99-pinephone.rules
+$ udevadm control --reload-rules
+$ udevadm trigger
+```
+
+2. Setup `pine0` network connection
+```
+$ nmcli con mod pine0 ipv4.addresses 10.0.0.1/24
+$ nmcli con mod pine0 ipv4.gateway 10.0.0.1/24
+$ nmcli con mod pine0 connection.autoconnect yes
+```
+
+3. By default `~/.ssh/id_rsa.pub` key will be embedded into the boot image. To connect over SSH run the following command:
+```
+$ ssh -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostkeyAlgorithms=+ssh-rsa -p 2022 root@10.0.0.100
+```
 
 ## Boot flow | Screenshot
 
