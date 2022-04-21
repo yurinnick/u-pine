@@ -48,14 +48,14 @@ var (
 func initNetwork() error {
 	usb, err := netlink.LinkByName(IFaceName)
 	if err != nil {
-		return fmt.Errorf("failed to get %s link: %v", IFaceName, err)
+		return fmt.Errorf("failed to get %s link: %w", IFaceName, err)
 	}
 	addr, _ := netlink.ParseAddr(IPAddress)
 	if err := netlink.AddrAdd(usb, addr); err != nil {
-		return fmt.Errorf("failed to assign IP address %s to %s: %v", IPAddress, IFaceName, err)
+		return fmt.Errorf("failed to assign IP address %s to %s: %w", IPAddress, IFaceName, err)
 	}
 	if err := netlink.LinkSetUp(usb); err != nil {
-		return fmt.Errorf("failed to enable %s interface link: %v", IFaceName, err)
+		return fmt.Errorf("failed to enable %s interface link: %w", IFaceName, err)
 	}
 	return nil
 }
@@ -72,7 +72,7 @@ func initGadget() error {
 	for _, module := range KernelModules {
 		log.Printf("Loading kernel module %v", module)
 		if err := kmodule.Probe(module, ""); err != nil {
-			return fmt.Errorf("could not load %s module: %v", module, err)
+			return fmt.Errorf("could not load %s module: %w", module, err)
 		}
 	}
 
@@ -88,7 +88,7 @@ func initGadget() error {
 	gMultiOptionsStr := stringFromDict(gMultiOptions)
 	log.Printf("modprobe g_multi %s", gMultiOptionsStr)
 	if err := kmodule.Probe("g_multi", gMultiOptionsStr); err != nil {
-		return fmt.Errorf("could not load g_multi module with option %s: %v", gMultiOptionsStr, err)
+		return fmt.Errorf("could not load g_multi module with option %s: %w", gMultiOptionsStr, err)
 	}
 
 	return nil
@@ -108,7 +108,7 @@ func setupPowersaving(cpuCount int) (errors []error) {
 		// Sysfs then passes the entire buffer to the store() method.
 		// https://www.kernel.org/doc/html/latest/filesystems/sysfs.html#reading-writing-attribute-data
 		if _, err := io.Copy(scalingGovWriter, powersavingStrReader); err != nil {
-			errors = append(errors, fmt.Errorf("failed to set powersaving scaling for cpu%d: %s", i, err))
+			errors = append(errors, fmt.Errorf("failed to set powersaving scaling for cpu%d: %w", i, err))
 		}
 	}
 	return errors
@@ -143,11 +143,11 @@ func displaySplashscreen(pngFile string) error {
 
 	img, err := png.Decode(imageFile)
 	if err != nil {
-		return fmt.Errorf("invalid splash screen image: %s", err)
+		return fmt.Errorf("invalid splash screen image: %w", err)
 	}
 
 	if err = fb.DrawImageAt(img, 0, 0); err != nil {
-		return fmt.Errorf("failed to draw splash screen: %s", err)
+		return fmt.Errorf("failed to draw splash screen: %w", err)
 	}
 
 	return nil
@@ -187,7 +187,7 @@ func main() {
 	}
 
 	if err := displaySplashscreen(SplashscreenFile); err != nil {
-		log.Printf("failed to display splashscreen: %s", err)
+		log.Printf("failed to display splashscreen: %v", err)
 	}
 
 	if err := startSSH(); err != nil {
