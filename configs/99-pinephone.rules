@@ -1,0 +1,5 @@
+#!/bin/sh
+SUBSYSTEM=="net", SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0525", ATTRS{idProduct}=="a4a2", NAME="pine0"
+SUBSYSTEM=="net", SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="4201", NAME="pine0"
+
+
