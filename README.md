@@ -1,7 +1,7 @@
-U-Pine (naming is WIP)
---------------------
+U-Pine
+------
 
-U-Pine is a ramdisk image that provides direct access to eMMC/SDCard storage to setups up a network-over-usb connection with a Pinephone.
+U-Pine is a ramdisk image that provides direct access to eMMC/SDCard storage, USB network and SSH connection to Pinephone.
 
 Just like [Jumpdrive](https://github.com/dreemurrs-embedded/Jumpdrive) but on Golang!
 
