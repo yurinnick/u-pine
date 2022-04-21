@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/u-root/u-root/pkg/checker"
@@ -32,9 +33,10 @@ var (
 	KernelModules = []string{
 		"sunxi",
 		"libcomposite",
-		"usb_f_ecm",
+		"usb_f_ecm", // ethernet-over-usb
 		"usb_f_acm",
 		"usb_f_ncm",
+		"goodix_ts", // touchscreen
 	}
 	// StorageDevices is a list of devices to attach as mass storage
 	StorageDevices = []string{
@@ -151,26 +153,44 @@ func displaySplashscreen(pngFile string) error {
 	return nil
 }
 
+func startSSH() error {
+	cmd := exec.Command("sshd")
+	cmd.Dir = "/etc/ssh"
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+	log.Printf("[%d] sshd is running...", cmd.Process.Pid)
+	err := cmd.Wait()
+	return err
+}
+
 func main() {
 	log.Print("Jumpdrive initializing...")
 	if err := initGadget(); err != nil {
 		log.Printf("failed to init USB gadget: %v\n", err)
 	}
+
 	if err := initNetwork(); err != nil {
 		log.Printf("failed to init network: %v\n", err)
 	}
+
 	if err := checkInterface(IFaceName); err != nil {
 		if err := checker.EmergencyShell("Failed to start Jumpdrive")(); err != nil {
 			log.Print(err)
 		}
 	}
+
 	if errs := setupPowersaving(CpuCount); len(errs) > 0 {
 		for _, err := range errs {
 			log.Print(err)
 		}
 	}
+
 	if err := displaySplashscreen(SplashscreenFile); err != nil {
 		log.Printf("failed to display splashscreen: %s", err)
 	}
-	log.Print("Jumpdrive started!")
+
+	if err := startSSH(); err != nil {
+		log.Printf("sshd exited with an error: %v", err)
+	}
 }

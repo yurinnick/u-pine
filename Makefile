@@ -61,14 +61,14 @@ initramfs-uroot.cpio: modules jumpdrive ssh_files
 		-uinitcmd="/jumpdrive" \
 		-files $(OUTPUT_DIR)/lib/modules:lib/modules \
 		-files $(OUTPUT_DIR)/jumpdrive:jumpdrive \
-		-files $(OUTPUT_DIR)/ssh:usr/ssh \
+		-files $(OUTPUT_DIR)/ssh:etc/ssh \
 		-files $(PROJECT_DIR)/files/splash.png:usr/splash.png \
 		core \
 		boot \
 		github.com/u-root/u-root/cmds/exp/modprobe \
 		github.com/u-root/u-root/cmds/exp/newsshd \
 		github.com/u-root/u-root/cmds/exp/fbsplash \
-		github.com/u-root/cpu/cmds/cpud \
+		github.com/u-root/cpu/cmds/cpud
 
 	cp /tmp/initramfs.linux_arm64.cpio $(OUTPUT_DIR)/initramfs-uroot.cpio
 
@@ -101,3 +101,11 @@ clean:
 	rm -rf $(TMP_DIR)
 	rm -rf $(BUILD_DIR)
 	rm -rf $(OUTPUT_DIR)
+
+qemu: Image initramfs-uroot.cpio
+	qemu-system-aarch64 \
+		-M virt \
+		-kernel ./output/Image \
+		-initrd ./output/initramfs-uroot.cpio \
+		-cpu cortex-a57 \
+		-nographic
